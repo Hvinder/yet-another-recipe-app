@@ -17,12 +17,9 @@ import { VictoryPie, VictoryContainer } from "victory";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-    // marginLeft: '20%',
-    // marginRight: '20%',
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    // maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
   },
   heading: {
@@ -59,10 +56,74 @@ const RecipeItem = (props) => {
   }, [state, props.location]);
   const classes = useStyles();
   const history = useHistory();
+
+  // Guard against opening this route via url
   if (!props.location.state) {
     history.push("/");
     return null;
   }
+
+  const ingredientsInfo = (
+    <Accordion style={{ width: "90%", marginTop: "20px" }}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+      >
+        <Typography className={classes.heading}>Ingredients</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Typography
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          {state && state.extendedIngredients ? (
+            state.extendedIngredients.map((ing) => {
+              return (
+                <i
+                  key={ing.id}
+                  style={{
+                    display: "flex",
+                    margin: 0,
+                    width: "100%",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span>{ing.name}</span>{" "}
+                  <span>
+                    {ing.measures.metric.amount} {ing.measures.metric.unitShort}
+                  </span>
+                </i>
+              );
+            })
+          ) : (
+            <CircularProgress />
+          )}
+        </Typography>
+      </AccordionDetails>
+    </Accordion>
+  );
+
+  const recipeSteps = (
+    <List
+      style={{ margin: "10px" }}
+      component="nav"
+      aria-label="secondary mailbox folders"
+    >
+      {props.location.state.analyzedInstructions[0].steps.map((step) => {
+        return (
+          <ListItem button key={step.number}>
+            <ListItemText primary={step.number + ". " + step.step} />
+          </ListItem>
+        );
+      })}
+    </List>
+  );
+
   return (
     <div className={classes.root}>
       <ArrowBackIosIcon
@@ -71,7 +132,7 @@ const RecipeItem = (props) => {
           zIndex: "10",
           color: "#fff",
           left: "10px",
-          top: "10px",
+          top: "30px",
         }}
         onClick={() => history.push("/")}
       />
@@ -81,65 +142,8 @@ const RecipeItem = (props) => {
         alt={props.location.state.title}
       />
       <p className={classes.title}>{props.location.state.title}</p>{" "}
-      <Accordion style={{ width: "90%", marginTop: "20px" }}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography className={classes.heading}>Ingredients</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            {state && state.extendedIngredients ? (
-              state.extendedIngredients.map((ing) => {
-                return (
-                  <i
-                    key={ing.id}
-                    style={{
-                      display: "flex",
-                      margin: 0,
-                      width: "100%",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <span>{ing.name}</span>{" "}
-                    <span>
-                      {ing.measures.metric.amount}{" "}
-                      {ing.measures.metric.unitShort}
-                    </span>
-                  </i>
-                );
-              })
-            ) : (
-              <CircularProgress />
-            )}
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-      <div style={{ margin: "10px" }}>
-        {/* <p
-          dangerouslySetInnerHTML={{ __html: props.location.state.summary }}
-        ></p> */}
-        <div>
-          <List component="nav" aria-label="secondary mailbox folders">
-            {props.location.state.analyzedInstructions[0].steps.map((step) => {
-              return (
-                <ListItem button key={step.number}>
-                  <ListItemText primary={step.number + ". " + step.step} />
-                </ListItem>
-              );
-            })}
-          </List>
-        </div>
-      </div>
+      {ingredientsInfo}
+      {recipeSteps}
       {state && state.nutrition && (
         <VictoryPie
           animate={{
