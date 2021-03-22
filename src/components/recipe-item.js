@@ -11,6 +11,8 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { VictoryPie, VictoryContainer } from "victory";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,7 +49,7 @@ const RecipeItem = (props) => {
       !state &&
       axios
         .get(
-          `https://api.spoonacular.com/recipes/${props.location.state.id}/information?includeNutrition=false&apiKey=b99505b93af941dab428e5a08cbb79ec`
+          `https://api.spoonacular.com/recipes/${props.location.state.id}/information?includeNutrition=true&apiKey=b99505b93af941dab428e5a08cbb79ec`
         )
         .then((res) => {
           console.log(res.data);
@@ -92,20 +94,33 @@ const RecipeItem = (props) => {
             style={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "start",
+              alignItems: "center",
+              width: "100%",
             }}
           >
-            {state &&
-              state.extendedIngredients &&
+            {state && state.extendedIngredients ? (
               state.extendedIngredients.map((ing) => {
                 return (
-                  <span key={ing.id} style={{ display: "block", margin: 0 }}>
-                    <i>
-                      {ing.name}: {ing.amount}
-                    </i>
-                  </span>
+                  <i
+                    key={ing.id}
+                    style={{
+                      display: "flex",
+                      margin: 0,
+                      width: "100%",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>{ing.name}</span>{" "}
+                    <span>
+                      {ing.measures.metric.amount}{" "}
+                      {ing.measures.metric.unitShort}
+                    </span>
+                  </i>
                 );
-              })}
+              })
+            ) : (
+              <CircularProgress />
+            )}
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -125,6 +140,23 @@ const RecipeItem = (props) => {
           </List>
         </div>
       </div>
+      {state && state.nutrition && (
+        <VictoryPie
+          animate={{
+            duration: 2000,
+          }}
+          colorScale={["#9f8bcc", "#b75644", "#7ac781", "#c3b84e"]}
+          categories={{ x: Object.keys(state.nutrition.caloricBreakdown) }}
+          data={Object.keys(state.nutrition.caloricBreakdown).map((el) => {
+            return {
+              x: el.replace("percent", "% "),
+              y: state.nutrition.caloricBreakdown[el],
+            };
+          })}
+          height={300}
+          containerComponent={<VictoryContainer responsive={false} />}
+        />
+      )}
     </div>
   );
 };
