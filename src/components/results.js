@@ -9,6 +9,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Chip from "@material-ui/core/Chip";
+import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 
 const useStyles = makeStyles({
   container: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles({
   },
   root: {
     maxWidth: 345,
+    minWidth: 345,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -66,15 +68,16 @@ const Results = (props) => {
                     );
                   })}
                 </div>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Ready in: {recipe.readyInMinutes}mins
+                <Typography variant="body2" color="textSecondary" component="p" style={{marginTop: '15px'}}>
+                  <QueryBuilderIcon /><br />
+                  {recipe.readyInMinutes}mins
                 </Typography>
               </CardContent>
             </CardActionArea>
             <CardActions>
-              <Button size="small" color="primary">
+              {/* <Button size="small" color="primary">
                 Discard
-              </Button>
+              </Button> */}
               <Button
                 size="small"
                 color="primary"

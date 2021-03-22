@@ -35,9 +35,17 @@ const VegSwitch = withStyles({
 
 const Search = (props) => {
   const [state, setState] = useState(null);
-  const [isNonVeg, setIsNonVeg] = useState(true);
+  const [isNonVeg, setIsNonVeg] = useState(
+    JSON.parse(localStorage.getItem("isNonVeg")) || true
+  );
 
   const classes = useStyles();
+
+  const onVegSwitchHandler = (e) => {
+    setIsNonVeg(e.target.checked);
+    localStorage.setItem("isNonVeg", JSON.stringify(e.target.checked));
+    props.isNonVegToggled(e.target.checked);
+  };
 
   return (
     <form className={classes.root} noValidate autoComplete="off">
@@ -52,16 +60,13 @@ const Search = (props) => {
         color="primary"
         className={classes.button}
         endIcon={<SearchOutlinedIcon />}
-        onClick={() => props.search({ query: state, isNonVeg: isNonVeg })}
+        onClick={() => props.search({ query: state })}
       >
         Search
       </Button>
       <div>
         Veg
-        <VegSwitch
-          checked={isNonVeg}
-          onChange={(e) => setIsNonVeg(e.target.checked)}
-        />
+        <VegSwitch checked={isNonVeg} onChange={onVegSwitchHandler} />
         Non-Veg
       </div>
     </form>
