@@ -17,7 +17,7 @@ import { VictoryPie, VictoryContainer } from "victory";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
+    width: window.innerWidth > 768 ? "60%" : "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
   image: {
     filter: "brightness(0.5)",
     width: "100%",
+    maxHeight: "400px",
   },
   title: {
     fontSize: "24px",
@@ -62,6 +63,24 @@ const RecipeItem = (props) => {
     history.push("/");
     return null;
   }
+
+  const nutritionalChart = state && state.nutrition && (
+    <VictoryPie
+      animate={{
+        duration: 2000,
+      }}
+      colorScale={["#9f8bcc", "rgb(199 98 98)", "#7ac781", "#c3b84e"]}
+      categories={{ x: Object.keys(state.nutrition.caloricBreakdown) }}
+      data={Object.keys(state.nutrition.caloricBreakdown).map((el) => {
+        return {
+          x: el.replace("percent", "% "),
+          y: state.nutrition.caloricBreakdown[el],
+        };
+      })}
+      height={300}
+      containerComponent={<VictoryContainer responsive={false} />}
+    />
+  );
 
   const ingredientsInfo = (
     <Accordion style={{ width: "90%" }}>
@@ -139,6 +158,7 @@ const RecipeItem = (props) => {
           alignItems: "center",
         }}
       >
+        {nutritionalChart}
         {state && state.extendedIngredients ? (
           <Typography
             style={{
@@ -206,23 +226,6 @@ const RecipeItem = (props) => {
       {ingredientsInfo}
       {nutritionalInfo}
       {recipeSteps}
-      {state && state.nutrition && (
-        <VictoryPie
-          animate={{
-            duration: 2000,
-          }}
-          colorScale={["#9f8bcc", "rgb(199 98 98)", "#7ac781", "#c3b84e"]}
-          categories={{ x: Object.keys(state.nutrition.caloricBreakdown) }}
-          data={Object.keys(state.nutrition.caloricBreakdown).map((el) => {
-            return {
-              x: el.replace("percent", "% "),
-              y: state.nutrition.caloricBreakdown[el],
-            };
-          })}
-          height={300}
-          containerComponent={<VictoryContainer responsive={false} />}
-        />
-      )}
     </div>
   );
 };
