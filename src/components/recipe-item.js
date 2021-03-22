@@ -29,16 +29,14 @@ const useStyles = makeStyles((theme) => ({
   image: {
     filter: "brightness(0.5)",
     width: "100%",
-    height: "75px",
   },
   title: {
-    position: "absolute",
-    color: "#fff",
-    fontSize: "28px",
+    fontSize: "24px",
   },
 }));
 
 const RecipeItem = (props) => {
+  window.scrollTo(0, 0);
   const [state, setState] = useState(null);
   useEffect(() => {
     props.location &&
@@ -64,7 +62,7 @@ const RecipeItem = (props) => {
   }
 
   const ingredientsInfo = (
-    <Accordion style={{ width: "90%", marginTop: "20px" }}>
+    <Accordion style={{ width: "90%" }}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
@@ -72,24 +70,25 @@ const RecipeItem = (props) => {
       >
         <Typography className={classes.heading}>Ingredients</Typography>
       </AccordionSummary>
-      <AccordionDetails>
-        <Typography
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          {state && state.extendedIngredients ? (
-            state.extendedIngredients.map((ing) => {
+      <AccordionDetails
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {state && state.extendedIngredients ? (
+          <Typography
+            style={{
+              width: "100%",
+            }}
+          >
+            {state.extendedIngredients.map((ing) => {
               return (
                 <i
                   key={ing.id}
                   style={{
                     display: "flex",
-                    margin: 0,
-                    width: "100%",
                     justifyContent: "space-between",
                   }}
                 >
@@ -99,11 +98,11 @@ const RecipeItem = (props) => {
                   </span>
                 </i>
               );
-            })
-          ) : (
-            <CircularProgress />
-          )}
-        </Typography>
+            })}
+          </Typography>
+        ) : (
+          <CircularProgress />
+        )}
       </AccordionDetails>
     </Accordion>
   );
@@ -149,7 +148,7 @@ const RecipeItem = (props) => {
           animate={{
             duration: 2000,
           }}
-          colorScale={["#9f8bcc", "#b75644", "#7ac781", "#c3b84e"]}
+          colorScale={["#9f8bcc", "rgb(199 98 98)", "#7ac781", "#c3b84e"]}
           categories={{ x: Object.keys(state.nutrition.caloricBreakdown) }}
           data={Object.keys(state.nutrition.caloricBreakdown).map((el) => {
             return {
