@@ -68,8 +68,14 @@ const Results = (props) => {
                     );
                   })}
                 </div>
-                <Typography variant="body2" color="textSecondary" component="p" style={{marginTop: '15px'}}>
-                  <QueryBuilderIcon /><br />
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  component="p"
+                  style={{ marginTop: "15px" }}
+                >
+                  <QueryBuilderIcon />
+                  <br />
                   {recipe.readyInMinutes}mins
                 </Typography>
               </CardContent>
