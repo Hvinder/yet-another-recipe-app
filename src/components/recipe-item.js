@@ -12,6 +12,7 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Switch from "@material-ui/core/Switch";
 import { VictoryPie, VictoryContainer } from "victory";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,9 +37,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RecipeItem = (props) => {
-  window.scrollTo(0, 0);
   const [state, setState] = useState(null);
+  const [unit, setUnit] = useState(localStorage.getItem("unit") || "metric");
   useEffect(() => {
+    window.scrollTo(0, 0);
     props.location &&
       props.location.state &&
       !state &&
@@ -77,6 +79,21 @@ const RecipeItem = (props) => {
           alignItems: "center",
         }}
       >
+        <div>
+          Imperial{" "}
+          <Switch
+            checked={unit === "metric"}
+            onChange={() => {
+              const newUnit = unit === "metric" ? "us" : "metric";
+              localStorage.setItem("unit", newUnit);
+              setUnit(newUnit);
+            }}
+            color="primary"
+            name="checkedB"
+            inputProps={{ "aria-label": "primary checkbox" }}
+          />{" "}
+          Metric
+        </div>
         {state && state.extendedIngredients ? (
           <Typography
             style={{
@@ -94,7 +111,52 @@ const RecipeItem = (props) => {
                 >
                   <span>{ing.name}</span>{" "}
                   <span>
-                    {ing.measures.metric.amount} {ing.measures.metric.unitShort}
+                    {ing.measures[unit].amount} {ing.measures[unit].unitShort}
+                  </span>
+                </i>
+              );
+            })}
+          </Typography>
+        ) : (
+          <CircularProgress />
+        )}
+      </AccordionDetails>
+    </Accordion>
+  );
+  const nutritionalInfo = (
+    <Accordion style={{ width: "90%" }}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+      >
+        <Typography className={classes.heading}>Nutrients</Typography>
+      </AccordionSummary>
+      <AccordionDetails
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {state && state.extendedIngredients ? (
+          <Typography
+            style={{
+              width: "100%",
+            }}
+          >
+            {state.nutrition.nutrients.map((nutrient) => {
+              return (
+                <i
+                  key={nutrient.name}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span>{nutrient.name}</span>{" "}
+                  <span>
+                    {nutrient.amount} {nutrient.unit}
                   </span>
                 </i>
               );
@@ -142,6 +204,7 @@ const RecipeItem = (props) => {
       />
       <p className={classes.title}>{props.location.state.title}</p>{" "}
       {ingredientsInfo}
+      {nutritionalInfo}
       {recipeSteps}
       {state && state.nutrition && (
         <VictoryPie
