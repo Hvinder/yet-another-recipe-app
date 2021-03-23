@@ -4,6 +4,7 @@ import axios from "axios";
 import Search from "../components/search";
 import Results from "../components/results";
 import RecipeItem from "../components/recipe-item";
+import Header from "../components/header";
 import { recipeSearchEndpoint } from "../constants/api-constants";
 
 const Container = () => {
@@ -48,13 +49,16 @@ const Container = () => {
     </div>
   );
   return (
-    <Switch>
-      <Route path="/" exact>
-        {" "}
-        {Home}{" "}
-      </Route>
-      <Route path="/recipe" component={RecipeItem} />
-    </Switch>
+    <>
+      <Header />
+      <Switch>
+        <Route path="/" exact>
+          {" "}
+          {Home}{" "}
+        </Route>
+        <Route path="/recipe" component={RecipeItem} />
+      </Switch>
+    </>
   );
 };
 

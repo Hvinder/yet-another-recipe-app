@@ -211,8 +211,8 @@ const RecipeItem = (props) => {
           position: "absolute",
           zIndex: "10",
           color: "#fff",
-          left: "10px",
-          top: "30px",
+          left: "20px",
+          top: "70px",
         }}
         onClick={() => history.push("/")}
       />
