@@ -16,7 +16,6 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    marginBottom: "20px",
   },
   root: {
     maxWidth: 345,
@@ -24,6 +23,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    marginBottom: "20px",
   },
   media: {
     height: 140,
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
   chips: {
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: 'space-between'
+    justifyContent: "space-between",
   },
   chip: {
     margin: "2px 5px",
@@ -42,63 +42,63 @@ const Results = (props) => {
   const history = useHistory();
   const classes = useStyles();
   return (
-    props.recipes &&
-    props.recipes.map((recipe) => {
-      return (
-        <div className={classes.container} key={recipe.id}>
-          <Card className={classes.root}>
-            <CardActionArea>
-              <CardMedia
-                className={classes.media}
-                image={recipe.image}
-                title={recipe.title}
-              />
-              <CardContent style={{paddingBottom: 0}}>
-                <Typography gutterBottom variant="h5" component="h2">
-                  {recipe.title}
-                </Typography>
-                <div className={classes.chips}>
-                  {recipe.dishTypes.map((dishType) => {
-                    return (
-                      <Chip
-                        className={classes.chip}
-                        key={dishType}
-                        label={dishType}
-                        variant="outlined"
-                      />
-                    );
-                  })}
-                </div>
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  component="p"
-                  style={{ marginTop: "15px" }}
-                >
-                  <QueryBuilderIcon />
-                  <br />
-                  {recipe.readyInMinutes}mins
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              {/* <Button size="small" color="primary">
+    <div className={classes.container}>
+      {props.recipes &&
+        props.recipes.map((recipe) => {
+          return (
+            <Card className={classes.root} key={recipe.id}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.media}
+                  image={recipe.image}
+                  title={recipe.title}
+                />
+                <CardContent style={{ paddingBottom: 0 }}>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    {recipe.title}
+                  </Typography>
+                  <div className={classes.chips}>
+                    {recipe.dishTypes.map((dishType) => {
+                      return (
+                        <Chip
+                          className={classes.chip}
+                          key={dishType}
+                          label={dishType}
+                          variant="outlined"
+                        />
+                      );
+                    })}
+                  </div>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                    style={{ marginTop: "15px" }}
+                  >
+                    <QueryBuilderIcon />
+                    <br />
+                    {recipe.readyInMinutes}mins
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+              <CardActions>
+                {/* <Button size="small" color="primary">
                 Discard
               </Button> */}
-              <Button
-                size="small"
-                color="primary"
-                onClick={() =>
-                  history.push({ pathname: "/recipe", state: recipe })
-                }
-              >
-                View Details
-              </Button>
-            </CardActions>
-          </Card>
-        </div>
-      );
-    })
+                <Button
+                  size="small"
+                  color="primary"
+                  onClick={() =>
+                    history.push({ pathname: "/recipe", state: recipe })
+                  }
+                >
+                  View Details
+                </Button>
+              </CardActions>
+            </Card>
+          );
+        })}
+    </div>
   );
 };
 

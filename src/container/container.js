@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import axios from "axios";
-
 import Search from "../components/search";
 import Results from "../components/results";
 import RecipeItem from "../components/recipe-item";
+import { recipeSearchEndpoint } from "../constants/api-constants";
 
 const Container = () => {
   const [data, setData] = useState(
@@ -16,9 +16,7 @@ const Container = () => {
   const [isNonVeg, setIsNonVeg] = useState(true);
   const searchHandler = (data) => {
     axios
-      .get(
-        `https://api.spoonacular.com/recipes/complexSearch?query=${data.query}&number=10&apiKey=b99505b93af941dab428e5a08cbb79ec&addRecipeInformation=true`
-      )
+      .get(recipeSearchEndpoint(data.query))
       .then((res) => {
         console.log(res.data);
         localStorage.setItem("recipes", JSON.stringify(res.data));
