@@ -10,11 +10,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
       margin: theme.spacing(1),
-      // width: "25ch",
+      width: "60%",
       height: "50px",
     },
   },
   button: {
+    width: "30%",
     margin: theme.spacing(1),
   },
 }));
@@ -64,10 +65,18 @@ const Search = (props) => {
       >
         Search
       </Button>
-      <div>
-        Veg
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        <span>Veg</span>
         <VegSwitch checked={isNonVeg} onChange={onVegSwitchHandler} />
-        Non-Veg
+        <span>Non-Veg</span>
       </div>
     </form>
   );

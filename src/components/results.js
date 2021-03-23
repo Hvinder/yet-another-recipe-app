@@ -31,6 +31,7 @@ const useStyles = makeStyles({
   chips: {
     display: "flex",
     flexWrap: "wrap",
+    justifyContent: 'space-between'
   },
   chip: {
     margin: "2px 5px",
@@ -52,7 +53,7 @@ const Results = (props) => {
                 image={recipe.image}
                 title={recipe.title}
               />
-              <CardContent>
+              <CardContent style={{paddingBottom: 0}}>
                 <Typography gutterBottom variant="h5" component="h2">
                   {recipe.title}
                 </Typography>

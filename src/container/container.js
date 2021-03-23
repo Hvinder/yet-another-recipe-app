@@ -30,7 +30,7 @@ const Container = () => {
   const filterData = (resData, isNonVeg) => {
     let rawData = JSON.parse(JSON.stringify(resData.results));
     rawData = rawData.filter((chunk) => chunk.vegetarian === !isNonVeg);
-    localStorage.setItem('filteredRecipes', JSON.stringify(rawData));
+    localStorage.setItem("filteredRecipes", JSON.stringify(rawData));
     setFilteredRecipes(rawData);
   };
   const isNonVegToggled = (isNonVeg) => {
@@ -39,10 +39,15 @@ const Container = () => {
   };
 
   const Home = (
-    <>
+    <div
+      style={{
+        background: "#fff",
+        width: window.innerWidth > 768 ? "60%" : "100%",
+      }}
+    >
       <Search search={searchHandler} isNonVegToggled={isNonVegToggled} />
       {filteredRecipes && <Results recipes={filteredRecipes} />}
-    </>
+    </div>
   );
   return (
     <Switch>
