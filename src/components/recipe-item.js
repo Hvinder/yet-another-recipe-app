@@ -38,6 +38,13 @@ const useStyles = makeStyles((theme) => ({
   title: {
     fontSize: "24px",
   },
+  fixedIcons: {
+    position: "absolute",
+    zIndex: "10",
+    color: "#fff",
+    top: "70px",
+    cursor: "pointer",
+  },
 }));
 
 const RecipeItem = (props) => {
@@ -222,42 +229,35 @@ const RecipeItem = (props) => {
     </List>
   );
 
+  const favIcon = isFavAdded ? (
+    <FavoriteIcon
+      className={classes.fixedIcons}
+      style={{
+        right: "20px",
+        fill: "red",
+      }}
+      onClick={() => toggleFavHandler(props.location.state)}
+    />
+  ) : (
+    <FavoriteBorderOutlinedIcon
+      className={classes.fixedIcons}
+      style={{
+        right: "20px",
+      }}
+      onClick={() => toggleFavHandler(props.location.state)}
+    />
+  );
+
   return (
     <div className={classes.root}>
       <ArrowBackIosIcon
+        className={classes.fixedIcons}
         style={{
-          position: "absolute",
-          zIndex: "10",
-          color: "#fff",
           left: "20px",
-          top: "70px",
         }}
         onClick={() => history.push("/")}
       />
-      {isFavAdded ? (
-        <FavoriteIcon
-          style={{
-            position: "absolute",
-            zIndex: "10",
-            color: "#fff",
-            right: "20px",
-            top: "70px",
-            fill: "red",
-          }}
-          onClick={() => toggleFavHandler(props.location.state)}
-        />
-      ) : (
-        <FavoriteBorderOutlinedIcon
-          style={{
-            position: "absolute",
-            zIndex: "10",
-            color: "#fff",
-            right: "20px",
-            top: "70px",
-          }}
-          onClick={() => toggleFavHandler(props.location.state)}
-        />
-      )}
+      {favIcon}
       <img
         className={classes.image}
         src={props.location.state.image}
