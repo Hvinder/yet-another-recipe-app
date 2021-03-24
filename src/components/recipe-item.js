@@ -13,6 +13,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Switch from "@material-ui/core/Switch";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import { VictoryPie, VictoryContainer } from "victory";
 import { recipeInfoEndpoint } from "../constants/api-constants";
 
@@ -41,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 const RecipeItem = (props) => {
   const [state, setState] = useState(null);
   const [unit, setUnit] = useState(localStorage.getItem("unit") || "metric");
+  const [fav, setfav] = useState(JSON.parse(localStorage.getItem("fav")) || []);
   useEffect(() => {
     window.scrollTo(0, 0);
     props.location &&
@@ -62,6 +65,21 @@ const RecipeItem = (props) => {
     history.push("/");
     return null;
   }
+
+  const isFavAdded = fav.some((item) => item.id === props.location.state.id);
+
+  const toggleFavHandler = (recipe) => {
+    // debugger;
+    if (!isFavAdded) {
+      const updatedFav = [...fav, recipe];
+      localStorage.setItem("fav", JSON.stringify(updatedFav));
+      setfav(updatedFav);
+    } else {
+      const updatedFav = fav.filter((item) => item.id !== recipe.id);
+      localStorage.setItem("fav", JSON.stringify(updatedFav));
+      setfav(updatedFav);
+    }
+  };
 
   const nutritionalChart = state && state.nutrition && (
     <VictoryPie
@@ -216,6 +234,30 @@ const RecipeItem = (props) => {
         }}
         onClick={() => history.push("/")}
       />
+      {isFavAdded ? (
+        <FavoriteIcon
+          style={{
+            position: "absolute",
+            zIndex: "10",
+            color: "#fff",
+            right: "20px",
+            top: "70px",
+            fill: "red",
+          }}
+          onClick={() => toggleFavHandler(props.location.state)}
+        />
+      ) : (
+        <FavoriteBorderOutlinedIcon
+          style={{
+            position: "absolute",
+            zIndex: "10",
+            color: "#fff",
+            right: "20px",
+            top: "70px",
+          }}
+          onClick={() => toggleFavHandler(props.location.state)}
+        />
+      )}
       <img
         className={classes.image}
         src={props.location.state.image}
