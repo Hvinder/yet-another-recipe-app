@@ -62,7 +62,12 @@ const Results = (props) => {
                 className={classes.root}
                 key={recipe.id}
               >
-                <Card>
+                <Card
+                  style={{
+                    boxShadow: "0px 5px 10px 0px #868686",
+                    borderRadius: "20px",
+                  }}
+                >
                   <CardActionArea>
                     <CardMedia
                       className={classes.media}
@@ -103,7 +108,7 @@ const Results = (props) => {
               </Button> */}
                     <Button
                       size="small"
-                      color="primary"
+                      color="secondary"
                       onClick={() =>
                         history.push({ pathname: "/recipe", state: recipe })
                       }

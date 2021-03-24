@@ -4,19 +4,26 @@ import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Switch from "@material-ui/core/Switch";
+import Avatar from "@material-ui/core/Avatar";
+import Snackbar from "@material-ui/core/Snackbar";
+import { deepOrange } from "@material-ui/core/colors";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import MuiAlert from "@material-ui/lab/Alert";
 import { VictoryPie, VictoryContainer } from "victory";
 import { recipeInfoEndpoint } from "../constants/api-constants";
+
+const Alert = (props) => {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,12 +52,21 @@ const useStyles = makeStyles((theme) => ({
     top: "70px",
     cursor: "pointer",
   },
+  recipeNumbers: {
+    color: theme.palette.getContrastText(deepOrange[500]),
+    backgroundColor: deepOrange[500],
+    width: theme.spacing(3),
+    height: theme.spacing(3),
+    fontSize: "14px",
+    marginRight: "10px",
+  },
 }));
 
 const RecipeItem = (props) => {
   const [state, setState] = useState(null);
   const [unit, setUnit] = useState(localStorage.getItem("unit") || "metric");
   const [fav, setfav] = useState(JSON.parse(localStorage.getItem("fav")) || []);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
   useEffect(() => {
     window.scrollTo(0, 0);
     props.location &&
@@ -73,6 +89,29 @@ const RecipeItem = (props) => {
     return null;
   }
 
+  const handleSnackBarClick = () => {
+    setOpenSnackBar(true);
+  };
+
+  const handleSnackBarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackBar(false);
+  };
+
+  const snackBar = (
+    <Snackbar
+      open={openSnackBar}
+      autoHideDuration={6000}
+      onClose={handleSnackBarClose}
+    >
+      <Alert onClose={handleSnackBarClose} severity="success">
+        Added to Favorite!
+      </Alert>
+    </Snackbar>
+  );
+
   const isFavAdded = fav.some((item) => item.id === props.location.state.id);
 
   const toggleFavHandler = (recipe) => {
@@ -81,6 +120,7 @@ const RecipeItem = (props) => {
       const updatedFav = [...fav, recipe];
       localStorage.setItem("fav", JSON.stringify(updatedFav));
       setfav(updatedFav);
+      handleSnackBarClick();
     } else {
       const updatedFav = fav.filter((item) => item.id !== recipe.id);
       localStorage.setItem("fav", JSON.stringify(updatedFav));
@@ -222,7 +262,12 @@ const RecipeItem = (props) => {
       {props.location.state.analyzedInstructions[0].steps.map((step) => {
         return (
           <ListItem button key={step.number}>
-            <ListItemText primary={step.number + ". " + step.step} />
+            <Typography style={{ display: "flex", alignItems: "flex-start" }}>
+              <Avatar className={classes.recipeNumbers}>
+                {step.number.toString()}
+              </Avatar>{" "}
+              {step.step}
+            </Typography>
           </ListItem>
         );
       })}
@@ -234,7 +279,6 @@ const RecipeItem = (props) => {
       className={classes.fixedIcons}
       style={{
         right: "20px",
-        fill: "red",
       }}
       onClick={() => toggleFavHandler(props.location.state)}
     />
@@ -267,6 +311,7 @@ const RecipeItem = (props) => {
       {ingredientsInfo}
       {nutritionalInfo}
       {recipeSteps}
+      {snackBar}
     </div>
   );
 };
