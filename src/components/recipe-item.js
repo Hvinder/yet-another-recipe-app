@@ -1,25 +1,20 @@
-import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Switch from "@material-ui/core/Switch";
 import Avatar from "@material-ui/core/Avatar";
 import Snackbar from "@material-ui/core/Snackbar";
 import { deepOrange } from "@material-ui/core/colors";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MuiAlert from "@material-ui/lab/Alert";
-import { VictoryPie, VictoryContainer } from "victory";
 import { recipeInfoEndpoint } from "../constants/api-constants";
+import Ingredients from "./ingredients";
+import NutritionalInfo from "./nutritional-info";
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -32,10 +27,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     backgroundColor: theme.palette.background.paper,
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
   },
   image: {
     filter: "brightness(0.5)",
@@ -64,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
 
 const RecipeItem = (props) => {
   const [state, setState] = useState(null);
-  const [unit, setUnit] = useState(localStorage.getItem("unit") || "metric");
   const [fav, setfav] = useState(JSON.parse(localStorage.getItem("fav")) || []);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   useEffect(() => {
@@ -115,7 +105,6 @@ const RecipeItem = (props) => {
   const isFavAdded = fav.some((item) => item.id === props.location.state.id);
 
   const toggleFavHandler = (recipe) => {
-    // debugger;
     if (!isFavAdded) {
       const updatedFav = [...fav, recipe];
       localStorage.setItem("fav", JSON.stringify(updatedFav));
@@ -127,131 +116,6 @@ const RecipeItem = (props) => {
       setfav(updatedFav);
     }
   };
-
-  const nutritionalChart = state && state.nutrition && (
-    <VictoryPie
-      animate={{
-        duration: 2000,
-      }}
-      colorScale={["#9f8bcc", "rgb(199 98 98)", "#7ac781", "#c3b84e"]}
-      categories={{ x: Object.keys(state.nutrition.caloricBreakdown) }}
-      data={Object.keys(state.nutrition.caloricBreakdown).map((el) => {
-        return {
-          x: el.replace("percent", "% "),
-          y: state.nutrition.caloricBreakdown[el],
-        };
-      })}
-      height={300}
-      containerComponent={<VictoryContainer responsive={false} />}
-    />
-  );
-
-  const ingredientsInfo = (
-    <Accordion style={{ width: "90%" }}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1a-content"
-        id="panel1a-header"
-      >
-        <Typography className={classes.heading}>Ingredients</Typography>
-      </AccordionSummary>
-      <AccordionDetails
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <div>
-          Imperial{" "}
-          <Switch
-            checked={unit === "metric"}
-            onChange={() => {
-              const newUnit = unit === "metric" ? "us" : "metric";
-              localStorage.setItem("unit", newUnit);
-              setUnit(newUnit);
-            }}
-            color="secondary"
-            name="checkedB"
-            inputProps={{ "aria-label": "primary checkbox" }}
-          />{" "}
-          Metric
-        </div>
-        {state && state.extendedIngredients ? (
-          <Typography
-            style={{
-              width: "100%",
-            }}
-          >
-            {state.extendedIngredients.map((ing) => {
-              return (
-                <i
-                  key={ing.id}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <span>{ing.name}</span>{" "}
-                  <span>
-                    {ing.measures[unit].amount} {ing.measures[unit].unitShort}
-                  </span>
-                </i>
-              );
-            })}
-          </Typography>
-        ) : (
-          <CircularProgress />
-        )}
-      </AccordionDetails>
-    </Accordion>
-  );
-  const nutritionalInfo = (
-    <Accordion style={{ width: "90%" }}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1a-content"
-        id="panel1a-header"
-      >
-        <Typography className={classes.heading}>Nutrients</Typography>
-      </AccordionSummary>
-      <AccordionDetails
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        {nutritionalChart}
-        {state && state.extendedIngredients ? (
-          <Typography
-            style={{
-              width: "100%",
-            }}
-          >
-            {state.nutrition.nutrients.map((nutrient) => {
-              return (
-                <i
-                  key={nutrient.name}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <span>{nutrient.name}</span>{" "}
-                  <span>
-                    {nutrient.amount} {nutrient.unit}
-                  </span>
-                </i>
-              );
-            })}
-          </Typography>
-        ) : (
-          <CircularProgress />
-        )}
-      </AccordionDetails>
-    </Accordion>
-  );
 
   const recipeSteps = (
     <List
@@ -308,8 +172,8 @@ const RecipeItem = (props) => {
         alt={props.location.state.title}
       />
       <p className={classes.title}>{props.location.state.title}</p>{" "}
-      {ingredientsInfo}
-      {nutritionalInfo}
+      <Ingredients ingredients={(state && state.extendedIngredients) || null} />
+      <NutritionalInfo nutrition={(state && state.nutrition) || null} />
       {recipeSteps}
       {snackBar}
     </div>
