@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import Switch from "@material-ui/core/Switch";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 
 const useStyles = makeStyles((theme) => ({
@@ -20,33 +19,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VegSwitch = withStyles({
-  switchBase: {
-    // color: "#f93853",
-    "&$checked": {
-      color: "#f93853", // may use this as primary theme color
-    },
-    // "&$checked + $track": {
-    //   // backgroundColor: '#ddd',
-    // },
-  },
-  checked: {},
-  track: {},
-})(Switch);
-
 const Search = (props) => {
   const [state, setState] = useState(null);
-  const [isNonVeg, setIsNonVeg] = useState(
-    JSON.parse(localStorage.getItem("isNonVeg")) || true
-  );
-
   const classes = useStyles();
-
-  const onVegSwitchHandler = (e) => {
-    setIsNonVeg(e.target.checked);
-    localStorage.setItem("isNonVeg", JSON.stringify(e.target.checked));
-    props.isNonVegToggled(e.target.checked);
-  };
 
   return (
     <form className={classes.root} noValidate autoComplete="off">
@@ -65,19 +40,6 @@ const Search = (props) => {
       >
         Search
       </Button>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        <span>Veg</span>
-        <VegSwitch checked={isNonVeg} onChange={onVegSwitchHandler} />
-        <span>Non-Veg</span>
-      </div>
     </form>
   );
 };
