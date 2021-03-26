@@ -9,12 +9,14 @@ const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
       margin: theme.spacing(1),
+      marginTop: "20px",
       width: "60%",
       height: "50px",
     },
   },
   button: {
     width: "30%",
+    marginTop: "20px",
     margin: theme.spacing(1),
   },
 }));

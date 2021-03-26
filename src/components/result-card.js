@@ -51,6 +51,8 @@ const ResultCard = (props) => {
         style={{
           boxShadow: "0px 5px 10px 0px #868686",
           borderRadius: "20px",
+          width: "100%",
+          height: "100%",
         }}
       >
         <CardActionArea>
@@ -65,13 +67,15 @@ const ResultCard = (props) => {
             </Typography>
             <div className={classes.chips}>
               {props.recipe.dishTypes.map((dishType, index) => {
-                return index < 5 && (
-                  <Chip
-                    className={classes.chip}
-                    key={dishType}
-                    label={dishType}
-                    variant="outlined"
-                  />
+                return (
+                  index < 5 && (
+                    <Chip
+                      className={classes.chip}
+                      key={dishType}
+                      label={dishType}
+                      variant="outlined"
+                    />
+                  )
                 );
               })}
             </div>
