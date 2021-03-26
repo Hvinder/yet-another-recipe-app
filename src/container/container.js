@@ -7,6 +7,9 @@ import Results from "../components/results";
 import RecipeDetails from "../components/recipe-details";
 import Header from "../components/header";
 import { recipeSearchEndpoint } from "../constants/api-constants";
+import ScrollTop from "../components/scroll-to-top";
+import Fab from "@material-ui/core/Fab";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 
 const useStyles = makeStyles({
   root: {
@@ -15,7 +18,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Container = () => {
+const Container = (props) => {
   const [data, setData] = useState(
     JSON.parse(localStorage.getItem("recipes")) || null
   );
@@ -45,6 +48,7 @@ const Container = () => {
   return (
     <>
       <Header />
+      <div id="back-to-top-anchor"></div>
       <Switch>
         <Route path="/" exact>
           {home}
@@ -52,6 +56,11 @@ const Container = () => {
         <Route path="/recipe" component={RecipeDetails} />
         <Route path="/bookmarks">{bookmarks}</Route>
       </Switch>
+      <ScrollTop {...props}>
+        <Fab color="secondary" size="small" aria-label="scroll back to top">
+          <KeyboardArrowUpIcon />
+        </Fab>
+      </ScrollTop>
     </>
   );
 };
