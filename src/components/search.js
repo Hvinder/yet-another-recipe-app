@@ -22,9 +22,9 @@ const useStyles = makeStyles((theme) => ({
 
 const VegSwitch = withStyles({
   switchBase: {
-    color: "#048404",
+    // color: "#f93853",
     "&$checked": {
-      color: "#d80b0b",
+      color: "#f93853", // may use this as primary theme color
     },
     // "&$checked + $track": {
     //   // backgroundColor: '#ddd',

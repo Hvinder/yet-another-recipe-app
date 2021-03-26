@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -20,12 +21,14 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    cursor: "pointer",
   },
   offset: theme.mixins.toolbar,
 }));
 
 const Header = () => {
   const classes = useStyles();
+  const history = useHistory();
 
   return (
     <div className={classes.root}>
@@ -39,7 +42,11 @@ const Header = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography
+            variant="h6"
+            className={classes.title}
+            onClick={() => history.push("/")}
+          >
             Yet Another Recipe App
           </Typography>
           <IconButton
@@ -47,6 +54,7 @@ const Header = () => {
             className={classes.favoriteButton}
             color="inherit"
             aria-label="menu"
+            onClick={() => history.push("bookmarks")}
           >
             <BookmarkIcon />
           </IconButton>

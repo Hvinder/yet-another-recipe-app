@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
@@ -53,10 +52,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RecipeItem = (props) => {
+const RecipeDetails = (props) => {
   const [state, setState] = useState(null);
   const [fav, setfav] = useState(JSON.parse(localStorage.getItem("fav")) || []);
   const [openSnackBar, setOpenSnackBar] = useState(false);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     props.location &&
@@ -70,12 +70,12 @@ const RecipeItem = (props) => {
         })
         .catch((err) => console.log(err));
   }, [state, props.location]);
+
   const classes = useStyles();
-  const history = useHistory();
 
   // Guard against opening this route via url
   if (!props.location.state) {
-    history.push("/");
+    props.history.push("/");
     return null;
   }
 
@@ -163,7 +163,7 @@ const RecipeItem = (props) => {
         style={{
           left: "20px",
         }}
-        onClick={() => history.push("/")}
+        onClick={() => props.history.goBack()}
       />
       {favIcon}
       <img
@@ -180,4 +180,4 @@ const RecipeItem = (props) => {
   );
 };
 
-export default RecipeItem;
+export default RecipeDetails;

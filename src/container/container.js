@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import axios from "axios";
+import { makeStyles } from "@material-ui/core/styles";
 import Search from "../components/search";
 import Results from "../components/results";
-import RecipeItem from "../components/recipe-item";
+import RecipeDetails from "../components/recipe-details";
 import Header from "../components/header";
 import { recipeSearchEndpoint } from "../constants/api-constants";
+
+const useStyles = makeStyles({
+  root: {
+    background: "#fff",
+    width: window.innerWidth > 768 ? "60%" : "100%",
+  },
+});
 
 const Container = () => {
   const [data, setData] = useState(
@@ -37,15 +45,16 @@ const Container = () => {
     filterData(data, isNonVeg);
   };
 
-  const Home = (
-    <div
-      style={{
-        background: "#fff",
-        width: window.innerWidth > 768 ? "60%" : "100%",
-      }}
-    >
+  const classes = useStyles();
+  const home = (
+    <div className={classes.root}>
       <Search search={searchHandler} isNonVegToggled={isNonVegToggled} />
       {filteredRecipes && <Results recipes={filteredRecipes} />}
+    </div>
+  );
+  const bookmarks = (
+    <div className={classes.root}>
+      <Results recipes={JSON.parse(localStorage.getItem("fav"))} />
     </div>
   );
   return (
@@ -53,10 +62,10 @@ const Container = () => {
       <Header />
       <Switch>
         <Route path="/" exact>
-          {" "}
-          {Home}{" "}
+          {home}
         </Route>
-        <Route path="/recipe" component={RecipeItem} />
+        <Route path="/recipe" component={RecipeDetails} />
+        <Route path="/bookmarks">{bookmarks}</Route>
       </Switch>
     </>
   );
