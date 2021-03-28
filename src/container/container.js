@@ -45,6 +45,13 @@ const Container = (props) => {
       <Results recipes={JSON.parse(localStorage.getItem("fav"))} />
     </div>
   );
+  const scrollToTop = (
+    <ScrollTop {...props}>
+      <Fab color="secondary" size="small" aria-label="scroll back to top">
+        <KeyboardArrowUpIcon />
+      </Fab>
+    </ScrollTop>
+  );
   return (
     <>
       <Header />
@@ -56,11 +63,7 @@ const Container = (props) => {
         <Route path="/recipe" component={RecipeDetails} />
         <Route path="/bookmarks">{bookmarks}</Route>
       </Switch>
-      <ScrollTop {...props}>
-        <Fab color="secondary" size="small" aria-label="scroll back to top">
-          <KeyboardArrowUpIcon />
-        </Fab>
-      </ScrollTop>
+      {scrollToTop}
     </>
   );
 };
