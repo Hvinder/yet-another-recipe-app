@@ -21,7 +21,6 @@ const Alert = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: window.innerWidth > 768 ? "60%" : "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -39,7 +38,10 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     zIndex: "10",
     color: "#fff",
-    top: "70px",
+    top: "80px",
+    width: window.innerWidth > 768 ? "58%" : "95%",
+    display: 'flex',
+    justifyContent: 'space-between',
     cursor: "pointer",
   },
   recipeNumbers: {
@@ -133,33 +135,19 @@ const RecipeDetails = (props) => {
   );
 
   const favIcon = isFavAdded ? (
-    <FavoriteIcon
-      className={classes.fixedIcons}
-      style={{
-        right: "20px",
-      }}
-      onClick={() => toggleFavHandler(props.location.state)}
-    />
+    <FavoriteIcon onClick={() => toggleFavHandler(props.location.state)} />
   ) : (
     <FavoriteBorderOutlinedIcon
-      className={classes.fixedIcons}
-      style={{
-        right: "20px",
-      }}
       onClick={() => toggleFavHandler(props.location.state)}
     />
   );
 
   return (
     <div className={classes.root}>
-      <ArrowBackIosIcon
-        className={classes.fixedIcons}
-        style={{
-          left: "20px",
-        }}
-        onClick={() => props.history.goBack()}
-      />
-      {favIcon}
+      <div className={classes.fixedIcons}>
+        <ArrowBackIosIcon onClick={() => props.history.goBack()} />
+        {favIcon}
+      </div>
       <img
         className={classes.image}
         src={props.location.state.image}

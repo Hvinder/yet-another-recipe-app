@@ -21,18 +21,14 @@ const useStyles = makeStyles({
 const Container = (props) => {
   const classes = useStyles();
   const home = (
-    <div className={classes.root}>
+    <>
       <Search search={(data) => props.initializeRecipes(data.query)} />
       {props.recipes && props.recipes.results && (
         <Results recipes={props.recipes.results} />
       )}
-    </div>
+    </>
   );
-  const bookmarks = (
-    <div className={classes.root}>
-      <Results recipes={props.fav} />
-    </div>
-  );
+  const bookmarks = <Results recipes={props.fav} />;
   const scrollToTop = (
     <ScrollTop {...props}>
       <Fab color="secondary" size="small" aria-label="scroll back to top">
@@ -44,13 +40,15 @@ const Container = (props) => {
     <>
       <Header />
       <div id="back-to-top-anchor"></div>
-      <Switch>
-        <Route path="/" exact>
-          {home}
-        </Route>
-        <Route path="/recipe" component={RecipeDetails} />
-        <Route path="/bookmarks">{bookmarks}</Route>
-      </Switch>
+      <div className={classes.root}>
+        <Switch>
+          <Route path="/" exact>
+            {home}
+          </Route>
+          <Route path="/recipe" component={RecipeDetails} />
+          <Route path="/bookmarks">{bookmarks}</Route>
+        </Switch>
+      </div>
       {scrollToTop}
     </>
   );
