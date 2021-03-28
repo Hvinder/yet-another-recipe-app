@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -11,9 +11,9 @@ import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MuiAlert from "@material-ui/lab/Alert";
-import { recipeInfoEndpoint } from "../constants/api-constants";
 import Ingredients from "./ingredients";
 import NutritionalInfo from "./nutritional-info";
+import * as actionCreators from "../store/actions";
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -53,23 +53,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RecipeDetails = (props) => {
-  const [state, setState] = useState(null);
-  const [fav, setfav] = useState(JSON.parse(localStorage.getItem("fav")) || []);
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     props.location &&
       props.location.state &&
-      !state &&
-      axios
-        .get(recipeInfoEndpoint(props.location.state.id))
-        .then((res) => {
-          console.log(res.data);
-          setState(res.data);
-        })
-        .catch((err) => console.log(err));
-  }, [state, props.location]);
+      !props.recipeDetails &&
+      props.fetchRecipeDetails(props.location.state.id);
+  }, [props]);
 
   const classes = useStyles();
 
@@ -102,18 +94,20 @@ const RecipeDetails = (props) => {
     </Snackbar>
   );
 
-  const isFavAdded = fav.some((item) => item.id === props.location.state.id);
+  const isFavAdded = props.fav.some(
+    (item) => item.id === props.location.state.id
+  );
 
   const toggleFavHandler = (recipe) => {
     if (!isFavAdded) {
-      const updatedFav = [...fav, recipe];
+      const updatedFav = [...props.fav, recipe];
       localStorage.setItem("fav", JSON.stringify(updatedFav));
-      setfav(updatedFav);
+      props.addFav(updatedFav);
       handleSnackBarClick();
     } else {
-      const updatedFav = fav.filter((item) => item.id !== recipe.id);
+      const updatedFav = props.fav.filter((item) => item.id !== recipe.id);
       localStorage.setItem("fav", JSON.stringify(updatedFav));
-      setfav(updatedFav);
+      props.addFav(updatedFav);
     }
   };
 
@@ -172,12 +166,35 @@ const RecipeDetails = (props) => {
         alt={props.location.state.title}
       />
       <p className={classes.title}>{props.location.state.title}</p>{" "}
-      <Ingredients ingredients={(state && state.extendedIngredients) || null} />
-      <NutritionalInfo nutrition={(state && state.nutrition) || null} />
+      <Ingredients
+        ingredients={
+          (props.recipeDetails && props.recipeDetails.extendedIngredients) ||
+          null
+        }
+      />
+      <NutritionalInfo
+        nutrition={
+          (props.recipeDetails && props.recipeDetails.nutrition) || null
+        }
+      />
       {recipeSteps}
       {snackBar}
     </div>
   );
 };
 
-export default RecipeDetails;
+const mapStateToProps = (state) => {
+  return {
+    recipeDetails: state.recipeDetails,
+    fav: state.fav,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchRecipeDetails: (id) =>
+      dispatch(actionCreators.fetchRecipeDetails({ id })),
+    addFav: (fav) => dispatch(actionCreators.addFav(fav)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecipeDetails);

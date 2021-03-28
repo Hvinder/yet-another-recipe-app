@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { Route, Switch } from "react-router-dom";
-import axios from "axios";
+import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import Search from "../components/search";
-import Results from "../components/results";
-import RecipeDetails from "../components/recipe-details";
-import Header from "../components/header";
-import { recipeSearchEndpoint } from "../constants/api-constants";
-import ScrollTop from "../components/scroll-to-top";
 import Fab from "@material-ui/core/Fab";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import Header from "../components/header";
+import RecipeDetails from "../components/recipe-details";
+import Results from "../components/results";
+import ScrollTop from "../components/scroll-to-top";
+import Search from "../components/search";
+import * as actionCreators from "../store/actions";
 
 const useStyles = makeStyles({
   root: {
@@ -19,30 +19,18 @@ const useStyles = makeStyles({
 });
 
 const Container = (props) => {
-  const [data, setData] = useState(
-    JSON.parse(localStorage.getItem("recipes")) || null
-  );
-  const searchHandler = (data) => {
-    axios
-      .get(recipeSearchEndpoint(data.query))
-      .then((res) => {
-        console.log(res.data);
-        localStorage.setItem("recipes", JSON.stringify(res.data));
-        setData(res.data);
-      })
-      .catch((err) => console.log(err));
-  };
-
   const classes = useStyles();
   const home = (
     <div className={classes.root}>
-      <Search search={searchHandler} />
-      {data && data.results && <Results recipes={data.results} />}
+      <Search search={(data) => props.initializeRecipes(data.query)} />
+      {props.recipes && props.recipes.results && (
+        <Results recipes={props.recipes.results} />
+      )}
     </div>
   );
   const bookmarks = (
     <div className={classes.root}>
-      <Results recipes={JSON.parse(localStorage.getItem("fav"))} />
+      <Results recipes={props.fav} />
     </div>
   );
   const scrollToTop = (
@@ -68,4 +56,17 @@ const Container = (props) => {
   );
 };
 
-export default Container;
+const mapStateToProps = (state) => {
+  return {
+    recipes: state.recipes,
+    fav: state.fav,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    initializeRecipes: (query) =>
+      dispatch(actionCreators.initializeRecipes({ query })),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Container);
